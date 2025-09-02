@@ -5,29 +5,33 @@ dotenv.config();
 const app = express();
 const PORT = 8000;
 
-app.get("/api/:date?", (req, res) => {
-  let { date } = req.params;
+// Case 1: No date → current time
+app.get("/api", (req, res) => {
+  const time = new Date();
+  res.json({
+    unix: time.getTime(),
+    utc: time.toUTCString(),
+  });
+});
+
+// Case 2: Date provided
+app.get("/api/:date", (req, res) => {
+  const { date } = req.params;
   let time;
 
-  // Case 1: No date provided → current time
-  if (!date) {
-    time = new Date();
-  }
-  // Case 2: Pure number string → treat as unix milliseconds
-  else if (!isNaN(date)) {
+  if (!isNaN(date)) {
+    // treat as unix
     time = new Date(parseInt(date));
-  }
-  // Case 3: Date string
-  else {
+  } else {
+    // treat as date string
     time = new Date(date);
   }
 
-  // Check validity
   if (time.toString() === "Invalid Date") {
     return res.json({ error: "Invalid Date" });
   }
 
-  return res.json({
+  res.json({
     unix: time.getTime(),
     utc: time.toUTCString(),
   });
