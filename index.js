@@ -17,6 +17,9 @@ app.get("/api", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 /**
  * /api/:date -> handle:
  *  - plain unix milliseconds (e.g. 1451001600000)
